@@ -36,6 +36,10 @@ app.use(express.static(path.join(__dirname, 'uploads')))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+//라우터 등록
+app.use('/', indexRouter)
+app.use('/auth', authRouter)
+
 app.use((req, res, next) => {
    const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`)
    error.status = 404
