@@ -1,13 +1,13 @@
 import React from 'react'
-import Login from '../components/auth/Login'
+import Signup from '../components/auth/Signup'
 import { Container } from '@mui/material'
 
-const LoginPage = () => {
+const SignupPage = () => {
    return (
       <Container maxWidth="md">
-         <Login />
+         <Signup />
       </Container>
    )
 }
 
-export default LoginPage
+export default SignupPage
