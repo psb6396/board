@@ -26,7 +26,7 @@ const Navbar = ({ isAuthenticated, user }) => {
                   </Link>
                   <Link to="/my" style={{ textDecoration: 'none' }}>
                      <Typography variant="body1" style={{ marginRight: '20px', color: 'black' }}>
-                        님
+                        {user?.nick} 님
                      </Typography>
                   </Link>
                   <Button onClick={handleLogout} variant="outlined">
