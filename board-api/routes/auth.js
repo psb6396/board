@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const passport = require('passport')
 
 //회원가입
 router.post('/join', async (req, res, next) => {
@@ -98,6 +99,20 @@ router.get('/logout', isLoggedIn, async (req, res, next) => {
 })
 
 //로그인 상태 확인 localhost:8000/auth/status
-router.get('/status', async (req, res, next) => {})
+router.get('/status', async (req, res, next) => {
+   if (req.isAuthenticated()) {
+      res.json({
+         isAuthenticated: true,
+         user: {
+            id: req.user.id,
+            nick: req.user.nick,
+         },
+      })
+   } else {
+      res.json({
+         isAuthenticated: false,
+      })
+   }
+})
 
 module.exports = router

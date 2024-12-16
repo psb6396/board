@@ -2,8 +2,10 @@ import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create'
 import { Link } from 'react-router-dom'
 import { useCallback } from 'react'
+import { useDispatch } from 'react-redux'
+import { logoutUserThunk } from '../../features/authSlice'
 
-const Navbar = ({ isAuthenticated }) => {
+const Navbar = ({ isAuthenticated, user }) => {
    const handleLogout = useCallback(() => {})
 
    return (
