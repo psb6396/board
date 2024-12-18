@@ -10,6 +10,7 @@ export const registerUserThunk = createAsyncThunk('auth/registerUser', async (us
    }
 })
 
+//로그인 thunk
 export const loginUserThunk = createAsyncThunk('auth/loginUser', async (Credentials, { rejectWithValue }) => {
    try {
       const response = await loginUser(Credentials)

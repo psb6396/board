@@ -3,6 +3,7 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const passport = require('passport')
+const { isLoggedIn, isNotLoggedIn } = require('./middleware')
 
 //회원가입
 router.post('/join', async (req, res, next) => {

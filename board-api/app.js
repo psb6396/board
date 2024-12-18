@@ -5,6 +5,7 @@ const morgan = require('morgan')
 const session = require('express-session')
 require('dotenv').config()
 const cors = require('cors')
+const passport = require('passport')
 
 const indexRouter = require('./routes/index')
 const authRouter = require('./routes/auth')
@@ -52,7 +53,6 @@ app.use(
 //passport 초기화, 세션연동
 app.use(passport.initialize()) //초기화
 app.use(passport.session()) //passport와 생성해둔 세션 연결
-
 
 //라우터 등록
 app.use('/', indexRouter)
