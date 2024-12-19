@@ -4,7 +4,7 @@ import { TextField, Button, Box } from '@mui/material'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-const PostForm = () => {
+const PostForm = ({ onSubmit }) => {
    const [content, setContent] = useState('')
    const [hashtags, setHashtags] = useState('')
    const [imgUrl, setImgUrl] = useState('')
@@ -48,9 +48,10 @@ const PostForm = () => {
       formData.append('hashtags', hashtags)
 
       if (imgFile) {
-         const encodedFile = newFile([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
+         const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
          formData.append('img', encodedFile)
       }
+      onSubmit(formData)
    }
    return (
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} encType="multipart/form-data">
