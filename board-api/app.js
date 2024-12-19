@@ -11,8 +11,12 @@ const indexRouter = require('./routes/index')
 const authRouter = require('./routes/auth')
 const { sequelize } = require('./models/index')
 const { error } = require('console')
+const passportConfig = require('./passport/index')
 
 const app = express()
+
+passportConfig() //passport 실행
+
 app.set('port', process.env.PORT || 8002)
 
 sequelize
@@ -67,6 +71,8 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
    const statusCode = err.status || 500
    const errorMessage = err.message || '서버 내부 오류'
+
+   console.log(err)
 
    res.status(statusCode).json({
       success: false,

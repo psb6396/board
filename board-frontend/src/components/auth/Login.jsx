@@ -7,16 +7,21 @@ import { loginUserThunk } from '../../features/authSlice'
 const Login = () => {
    const [email, setEmail] = useState('') // 이메일 상태
    const [password, setPassword] = useState('') // 비밀번호 상태
-   const loading = false
-   const error = false
    const dispatch = useDispatch()
+   const navigate = useNavigate()
+   const { loading, error } = useSelector((state) => state.auth)
 
    const handleLogin = useCallback(
       (e) => {
          e.preventDefault()
-         dispatch(loginUserThunk({ email, password }))
+         if (email.trim() && password.trim()) {
+            dispatch(loginUserThunk({ email, password }))
+               .unwrap()
+               .then(() => navigate('/'))
+               .catch((error) => console.error('로그인실패:', error))
+         }
       },
-      [dispatch]
+      [dispatch, navigate, email, password]
    )
 
    const loginButtonContent = useMemo(
