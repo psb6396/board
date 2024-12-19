@@ -9,6 +9,7 @@ const passport = require('passport')
 
 const indexRouter = require('./routes/index')
 const authRouter = require('./routes/auth')
+const postRouter = require('./routes/post')
 const { sequelize } = require('./models/index')
 const { error } = require('console')
 const passportConfig = require('./passport/index')
@@ -61,6 +62,7 @@ app.use(passport.session()) //passport와 생성해둔 세션 연결
 //라우터 등록
 app.use('/', indexRouter)
 app.use('/auth', authRouter)
+app.use('/post', postRouter)
 
 app.use((req, res, next) => {
    const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`)
