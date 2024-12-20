@@ -6,7 +6,10 @@ import { useDispatch } from 'react-redux'
 import { logoutUserThunk } from '../../features/authSlice'
 
 const Navbar = ({ isAuthenticated, user }) => {
-   const handleLogout = useCallback(() => {})
+   const dispatch = useDispatch()
+   const handleLogout = useCallback(() => {
+      dispatch(logoutUserThunk())
+   })
 
    return (
       <AppBar position="static" style={{ backgroundColor: '#fff' }}>
