@@ -24,7 +24,7 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/posts/create" element={<PostCreatePage />} />
-            <Route path="/posts/edit/:id" element={<PostCreatePage />} />
+            <Route path="/posts/edit/:id" element={<PostEditPage />} />
          </Routes>
       </>
    )
