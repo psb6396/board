@@ -56,6 +56,7 @@ export const checkAuthStatus = async () => {
    }
 }
 
+//게시물 등록
 export const createPost = async (postData) => {
    try {
       const config = {
@@ -64,6 +65,17 @@ export const createPost = async (postData) => {
          },
       }
       const response = await boardApi.post('/post', postData, config)
+      return response
+   } catch (error) {
+      console.error(`API Request 오류: ${error.message}`)
+      throw error
+   }
+}
+
+//게시물 가져오기
+export const fetchPosts = async () => {
+   try {
+      const response = await boardApi.get('/')
       return response
    } catch (error) {
       console.error(`API Request 오류: ${error.message}`)

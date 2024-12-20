@@ -6,6 +6,7 @@ const { Post, Hashtag, User } = require('../models')
 const multer = require('multer')
 const fs = require('fs')
 const path = require('path')
+const { count } = require('console')
 
 try {
    fs.readdirSync('uploads')
@@ -72,6 +73,33 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
    } catch (error) {
       console.error(error)
       res.status(500).json({ success: false, message: '게시물 등록 중 오류가 발생했습니다.', error })
+   }
+})
+
+//전체게시물 불러오기
+router.get('/', async (req, res) => {
+   try {
+      const posts = await Post.findAll({
+         order: [['createdAt', 'DESC']],
+         include: [
+            {
+               model: User,
+               attributes: ['id', 'nick', 'email'],
+            },
+            {
+               model: Hashtag,
+               attributes: ['title'],
+            },
+         ],
+      })
+      res.json({
+         success: true,
+         posts,
+         message: '전체 게시물 리스트를 성공적으로 불러왔습니다.',
+      })
+   } catch (error) {
+      console.error(error)
+      res.status(500).json({ success: false, message: '게시물 리스트를 불러오는 중 오류가 발생했습니다.', error })
    }
 })
 
