@@ -7,7 +7,7 @@ import { fetchPostByIdThunk, updatePostThunk } from '../features/postSlice'
 
 const PostEditPage = () => {
    const { id } = useParams()
-   const dispatch = useDispatch
+   const dispatch = useDispatch()
    const { post, loading, error } = useSelector((state) => state.posts)
 }
 

@@ -51,6 +51,9 @@ const Home = ({ isAuthenticated, user }) => {
                   <Card key={post.id} sx={{ maxWidth: 345 }}>
                      <CardMedia component="img" height="194" image={`${process.env.REACT_APP_API_URL}${post.img}`} alt="Paella dish" />
                      <CardContent>
+                        <Link to={`/my/${post.User.id}`}>
+                        @{post.User.nick}
+                        </Link>
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                            {post.content}
                         </Typography>

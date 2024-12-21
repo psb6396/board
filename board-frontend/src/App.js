@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { checkAuthStatusThunk } from './features/authSlice'
 import PostCreatePage from './pages/PostCreatePage'
+import PostEditPage from './pages/PostEditPage'
 
 function App() {
    const dispatch = useDispatch()
