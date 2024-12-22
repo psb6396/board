@@ -76,6 +76,8 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
    }
 })
 
+
+
 //전체게시물 불러오기
 router.get('/', async (req, res) => {
    try {
@@ -100,6 +102,70 @@ router.get('/', async (req, res) => {
    } catch (error) {
       console.error(error)
       res.status(500).json({ success: false, message: '게시물 리스트를 불러오는 중 오류가 발생했습니다.', error })
+   }
+})
+
+//특정 게시물 불러오기
+router.get('/:id', async (req,res)=>{
+   try {
+      const post = await Post.findOne({
+         where: {id: req.params.id},
+         include: [
+            {
+               model: User,
+               attributes: ['id','nick'],
+            },
+            {
+               model: Hashtag,
+               attributes: ['title'],
+            },
+         ],
+      })
+      if(!post) {
+         return res.status(404).json({success: false, message:'게시물을 찾을 수 없습니다.'})
+      }
+      res.json({
+         success:true,
+         post,
+         message:'게시물을 성공적으로 불러왔습니다.',
+      })
+   } catch (error) {
+      console.error(error)
+      res.status(500).json({ success: false, message: '게시물을 불러오는 중 오류가 발생했습니다.', error })
+   }
+})
+
+//게시물 수정 
+router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
+   try {
+      const post = await Post.findOne({ where: {
+         id: req.params.id, UserId : req.user.id
+      }})
+      if(!post) {
+         return res.status(404).json({success:false, message: '게시물을 찾을 수 없습니다.'})
+      }
+      //게시물 수정
+      await post.update({
+         content: req.body.content,
+         img:req.file ? `/${req.file.filename}` : post.img,
+      })
+      const hashtags = req.body.hashtags.match(/#[^\s#]*/g) // #을 기준으로 해시태그 추출
+      if (hashtags) {
+         const result = await Promise.all(
+            hashtags.map((tag) =>
+               Hashtag.findOrCreate({
+                  where: { title: tag.slice(1) }, //#을 제외한 문자만
+               })
+            )
+         )
+
+         await post.setHashtags(result.map((r) => r[0])) //기존 해시태그를 새 해시태그로 교체
+      }
+
+
+   } catch (error) {
+      // console.error(error)
+      // res.status(500).json({ success: false, message: '게시물 수정 중 오류가 발생했습니다.', error })
    }
 })
 

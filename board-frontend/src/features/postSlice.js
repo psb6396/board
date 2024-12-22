@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { createPost, fetchPosts } from '../api/snsApi'
+import { createPost, fetchPosts, getPostById,updatePost } from '../api/snsApi'
 
 //게시물 등록
 export const createPostThunk = createAsyncThunk('post/createPost', async (postData, { rejectWithValue }) => {
@@ -20,6 +20,25 @@ export const fetchPostsThunk = createAsyncThunk('post/fetchPosts', async (_, { r
       return rejectWithValue(error.response?.data?.message || '게시물 가져오기 실패')
    }
 })
+
+export const fetchPostByIdThunk = createAsyncThunk('post/fetchPostById', async (id,{rejectWithValue})=>{
+   try {
+      const response = await getPostById(id)
+      return response.data
+   } catch (error) {
+      return rejectWithValue(error.response?.data?.message || '게시물 불러오기 실패')
+   }
+})
+
+export const updatePostThunk = createAsyncThunk('post/updatePost', async (data, {rejectWithValue}) => {
+      try {
+         const {id, postData} = data
+         const response = await updatePost(id, postData)
+         return response.data.post
+      } catch (error) {
+         return rejectWithValue(error.response?.data?.message || '게시물 등록 실패')
+      }
+   })
 
 const postSlice = createSlice({
    name: 'posts',
@@ -55,6 +74,32 @@ const postSlice = createSlice({
             state.posts = action.payload.posts
          })
          .addCase(fetchPostsThunk.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload
+         })
+         builder
+         .addCase(fetchPostByIdThunk.pending, (state) => {
+            state.loading = true
+            state.error = null
+         })
+         .addCase(fetchPostByIdThunk.fulfilled, (state, action) => {
+            state.loading = false
+            state.post = action.payload.post
+         })
+         .addCase(fetchPostByIdThunk.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload
+         })
+         builder
+         .addCase(updatePostThunk.pending, (state) => {
+            state.loading = true
+            state.error = null
+         })
+         .addCase(updatePostThunk.fulfilled, (state, action) => {
+            state.loading = false
+            state.post = action.payload.post
+         })
+         .addCase(updatePostThunk.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload
          })

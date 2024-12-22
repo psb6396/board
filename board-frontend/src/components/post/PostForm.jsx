@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 // import { Box } from '@mui/material'
 import { TextField, Button, Box } from '@mui/material'
-import { useState } from 'react'
+import { useState,useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 
-const PostForm = ({ onSubmit }) => {
-   const [content, setContent] = useState('')
-   const [hashtags, setHashtags] = useState('')
-   const [imgUrl, setImgUrl] = useState('')
+const PostForm = ({ onSubmit, initialValues={} }) => {
+   const [content, setContent] = useState(initialValues.content || '')
+   const [hashtags, setHashtags] = useState(initialValues.Hashtags ? initialValues.Hashtags.map((tag)=> `#${tag.title}`).join(' '):'')
+   const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '')
    const [imgFile, setImgFile] = useState(null)
 
    const handleImageChange = (e) => {
@@ -25,7 +25,7 @@ const PostForm = ({ onSubmit }) => {
       reader.readAsDataURL(file) //파일을 base64 URL로 변환 (이미지 미리보기에 주로 사용)
    }
 
-   const handleSubmit = (e) => {
+   const handleSubmit =useCallback( (e) => {
       e.preventDefault()
 
       if (!content.trim()) {
@@ -38,7 +38,7 @@ const PostForm = ({ onSubmit }) => {
          return
       }
 
-      if (!imgFile) {
+      if (!imgFile && !initialValues.id) {
          alert('이미지 파일을 추가하세요')
          return
       }
@@ -52,7 +52,10 @@ const PostForm = ({ onSubmit }) => {
          formData.append('img', encodedFile)
       }
       onSubmit(formData)
-   }
+      },[content, hashtags, imgFile, onSubmit]
+   )
+
+   const submitButtonLabel = useMemo(() => (initialValues.id ? '수정하기' : '등록하기'), [initialValues.id])
    return (
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} encType="multipart/form-data">
          {/* 이미지 업로드 필드 */}
@@ -75,8 +78,8 @@ const PostForm = ({ onSubmit }) => {
 
          {/* 등록 / 수정 버튼 */}
          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            {/* {submitButtonLabel} */}
-            등록하기
+            {submitButtonLabel}
+            
          </Button>
       </Box>
    )

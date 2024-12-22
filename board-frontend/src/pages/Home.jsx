@@ -58,16 +58,18 @@ const Home = ({ isAuthenticated, user }) => {
                            {post.content}
                         </Typography>
                      </CardContent>
-                     <CardActions disableSpacing>
-                        <Link to={`/posts/edit/${post.id}`}>
-                           <IconButton aria-label="edit">
-                              <EditIcon fontSize="small" />
+                        {isAuthenticated && post.User.id === user.id && (
+                           <CardActions disableSpacing>
+                           <Link to={`/posts/edit/${post.id}`}>
+                              <IconButton aria-label="edit">
+                                 <EditIcon fontSize="small" />
+                              </IconButton>
+                           </Link>
+                           <IconButton aria-label="delete" size="small" onClick={() => onClickDelete(post.id)}>
+                              <DeleteIcon fontSize="small" />
                            </IconButton>
-                        </Link>
-                        <IconButton aria-label="delete" size="small" onClick={() => onClickDelete(post.id)}>
-                           <DeleteIcon fontSize="small" />
-                        </IconButton>
-                     </CardActions>
+                        </CardActions>
+                        )}
                   </Card>
                ))}
             </Stack>
