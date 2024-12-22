@@ -112,3 +112,14 @@ export const updatePost = async (id,postData) => {
       throw error
    }
 }
+
+//게시물삭제
+export const deletePost = async (id, postData) => {
+   try {
+      const response = await boardApi.delete(`/post/${id}`)
+      return response
+   } catch (error) {
+      console.error(`API Request 오류: ${error.message}`)
+      throw error
+   }
+}

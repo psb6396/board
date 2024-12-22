@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { createPost, fetchPosts, getPostById,updatePost } from '../api/snsApi'
+import { createPost, deletePost, fetchPosts, getPostById,updatePost } from '../api/snsApi'
+// import { create } from '../../../board-api/models/user'
 
 //게시물 등록
 export const createPostThunk = createAsyncThunk('post/createPost', async (postData, { rejectWithValue }) => {
@@ -39,6 +40,15 @@ export const updatePostThunk = createAsyncThunk('post/updatePost', async (data, 
          return rejectWithValue(error.response?.data?.message || '게시물 등록 실패')
       }
    })
+
+export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id,{rejectWithValue})=>{
+   try {
+      const response = await deletePost(id)
+      return id
+   } catch (error) {
+      return rejectWithValue(error.response?.data?.message || '게시물 삭제 실패')
+   }
+})
 
 const postSlice = createSlice({
    name: 'posts',
@@ -100,6 +110,18 @@ const postSlice = createSlice({
             state.post = action.payload.post
          })
          .addCase(updatePostThunk.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload
+         })
+         builder
+         .addCase(deletePostThunk.pending, (state) => {
+            state.loading = true
+            state.error = null
+         })
+         .addCase(deletePostThunk.fulfilled, (state, action) => {
+            state.loading = false
+         })
+         .addCase(deletePostThunk.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload
          })

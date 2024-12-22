@@ -13,19 +13,30 @@ import IconButton from '@mui/material/IconButton'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useState, useEffect } from 'react'
-import { fetchPostsThunk } from '../features/postSlice'
+import { useState, useEffect, useCallback } from 'react'
+import { fetchPostsThunk, deletePostThunk } from '../features/postSlice'
 import { Link } from 'react-router-dom'
+
 
 const Home = ({ isAuthenticated, user }) => {
    const { posts, loading, error } = useSelector((state) => state.posts)
 
    const dispatch = useDispatch()
-   const onClickDelete = () => {}
+   // const onClickDelete = () => {}
 
    useEffect(() => {
       dispatch(fetchPostsThunk())
    }, [dispatch])
+   const onClickDelete = useCallback((id)=> {
+      dispatch(deletePostThunk(id))
+      .unwrap()
+      .then(()=>{
+         window.location.href = '/'
+      })
+      .catch((error)=>{
+         console.error('게시물 삭제 중 오류발생')
+      })
+   })
 
    return (
       <Container maxWidth="xs">
