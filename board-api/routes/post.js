@@ -164,8 +164,8 @@ router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
 
 
    } catch (error) {
-      // console.error(error)
-      // res.status(500).json({ success: false, message: '게시물 수정 중 오류가 발생했습니다.', error })
+      console.error(error)
+      res.status(500).json({ success: false, message: '게시물 수정 중 오류가 발생했습니다.', error })
    }
 })
 
