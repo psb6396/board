@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { createPost, deletePost, fetchPosts, getPostById,updatePost } from '../api/snsApi'
+import { createPost, deletePost, fetchPosts, getPostById, updatePost } from '../api/snsApi'
 // import { create } from '../../../board-api/models/user'
 
 //게시물 등록
@@ -22,7 +22,7 @@ export const fetchPostsThunk = createAsyncThunk('post/fetchPosts', async (_, { r
    }
 })
 
-export const fetchPostByIdThunk = createAsyncThunk('post/fetchPostById', async (id,{rejectWithValue})=>{
+export const fetchPostByIdThunk = createAsyncThunk('post/fetchPostById', async (id, { rejectWithValue }) => {
    try {
       const response = await getPostById(id)
       return response.data
@@ -31,17 +31,18 @@ export const fetchPostByIdThunk = createAsyncThunk('post/fetchPostById', async (
    }
 })
 
-export const updatePostThunk = createAsyncThunk('post/updatePost', async (data, {rejectWithValue}) => {
-      try {
-         const {id, postData} = data
-         const response = await updatePost(id, postData)
-         return response.data.post
-      } catch (error) {
-         return rejectWithValue(error.response?.data?.message || '게시물 등록 실패')
-      }
-   })
+export const updatePostThunk = createAsyncThunk('post/updatePost', async (data, { rejectWithValue }) => {
+   try {
+      // console.log('sadf')
+      const { id, postData } = data
+      const response = await updatePost(id, postData)
+      return response.data.post
+   } catch (error) {
+      return rejectWithValue(error.response?.data?.message || '게시물 수정 실패')
+   }
+})
 
-export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id,{rejectWithValue})=>{
+export const deletePostThunk = createAsyncThunk('posts/deletePost', async (id, { rejectWithValue }) => {
    try {
       const response = await deletePost(id)
       return id
@@ -87,7 +88,7 @@ const postSlice = createSlice({
             state.loading = false
             state.error = action.payload
          })
-         builder
+      builder
          .addCase(fetchPostByIdThunk.pending, (state) => {
             state.loading = true
             state.error = null
@@ -100,20 +101,20 @@ const postSlice = createSlice({
             state.loading = false
             state.error = action.payload
          })
-         builder
+      builder
          .addCase(updatePostThunk.pending, (state) => {
             state.loading = true
             state.error = null
          })
          .addCase(updatePostThunk.fulfilled, (state, action) => {
             state.loading = false
-            state.post = action.payload.post
+            // state.post = action.payload
          })
          .addCase(updatePostThunk.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload
          })
-         builder
+      builder
          .addCase(deletePostThunk.pending, (state) => {
             state.loading = true
             state.error = null

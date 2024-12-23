@@ -1,16 +1,15 @@
 import React, { useCallback } from 'react'
 // import { Box } from '@mui/material'
 import { TextField, Button, Box } from '@mui/material'
-import { useState,useMemo } from 'react'
-import { useDispatch } from 'react-redux'
+import { useState, useMemo } from 'react'
 
-const PostForm = ({ onSubmit, initialValues={} }) => {
+const PostForm = ({ onSubmit, initialValues = {} }) => {
    const [content, setContent] = useState(initialValues.content || '')
-   const [hashtags, setHashtags] = useState(initialValues.Hashtags ? initialValues.Hashtags.map((tag)=> `#${tag.title}`).join(' '):'')
+   const [hashtags, setHashtags] = useState(initialValues.Hashtags ? initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ') : '')
    const [imgUrl, setImgUrl] = useState(initialValues.img ? process.env.REACT_APP_API_URL + initialValues.img : '')
    const [imgFile, setImgFile] = useState(null)
 
-   const handleImageChange = (e) => {
+   const handleImageChange = useCallback((e) => {
       const file = e.target.files && e.target.files[0]
       if (!file) return //파일이 없을 경우 함수 종료
 
@@ -23,36 +22,38 @@ const PostForm = ({ onSubmit, initialValues={} }) => {
       }
 
       reader.readAsDataURL(file) //파일을 base64 URL로 변환 (이미지 미리보기에 주로 사용)
-   }
+   }, [])
 
-   const handleSubmit =useCallback( (e) => {
-      e.preventDefault()
+   const handleSubmit = useCallback(
+      (e) => {
+         e.preventDefault()
 
-      if (!content.trim()) {
-         alert('내용을 입력하세요.')
-         return
-      }
+         if (!content.trim()) {
+            alert('내용을 입력하세요.')
+            return
+         }
 
-      if (!hashtags.trim()) {
-         alert('해시태그를 입력하세요')
-         return
-      }
+         if (!hashtags.trim()) {
+            alert('해시태그를 입력하세요')
+            return
+         }
 
-      if (!imgFile && !initialValues.id) {
-         alert('이미지 파일을 추가하세요')
-         return
-      }
+         if (!imgFile && !initialValues.id) {
+            alert('이미지 파일을 추가하세요')
+            return
+         }
 
-      const formData = new FormData()
-      formData.append('content', content)
-      formData.append('hashtags', hashtags)
+         const formData = new FormData()
+         formData.append('content', content)
+         formData.append('hashtags', hashtags)
 
-      if (imgFile) {
-         const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
-         formData.append('img', encodedFile)
-      }
-      onSubmit(formData)
-      },[content, hashtags, imgFile, onSubmit]
+         if (imgFile) {
+            const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
+            formData.append('img', encodedFile)
+         }
+         onSubmit(formData)
+      },
+      [content, hashtags, imgFile, onSubmit, initialValues.id]
    )
 
    const submitButtonLabel = useMemo(() => (initialValues.id ? '수정하기' : '등록하기'), [initialValues.id])
@@ -79,7 +80,6 @@ const PostForm = ({ onSubmit, initialValues={} }) => {
          {/* 등록 / 수정 버튼 */}
          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
             {submitButtonLabel}
-            
          </Button>
       </Box>
    )

@@ -64,7 +64,7 @@ export const createPost = async (postData) => {
             'Content-Type': 'multipart/form-data', // 데이터 형식 지정
          },
       }
-      const response = await boardApi.post('/posts', postData, config)
+      const response = await boardApi.post('/post', postData, config)
       return response
    } catch (error) {
       console.error(`API Request 오류: ${error.message}`)
@@ -95,7 +95,7 @@ export const getPostById = async (id) => {
 }
 
 //게시물 수정하기
-export const updatePost = async (id,postData) => {
+export const updatePost = async (id, postData) => {
    try {
       const config = {
          headers: {

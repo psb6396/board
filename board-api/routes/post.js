@@ -76,8 +76,6 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res) => {
    }
 })
 
-
-
 //전체게시물 불러오기
 router.get('/', async (req, res) => {
    try {
@@ -106,14 +104,14 @@ router.get('/', async (req, res) => {
 })
 
 //특정 게시물 불러오기
-router.get('/:id', async (req,res)=>{
+router.get('/:id', async (req, res) => {
    try {
       const post = await Post.findOne({
-         where: {id: req.params.id},
+         where: { id: req.params.id },
          include: [
             {
                model: User,
-               attributes: ['id','nick'],
+               attributes: ['id', 'nick'],
             },
             {
                model: Hashtag,
@@ -121,13 +119,13 @@ router.get('/:id', async (req,res)=>{
             },
          ],
       })
-      if(!post) {
-         return res.status(404).json({success: false, message:'게시물을 찾을 수 없습니다.'})
+      if (!post) {
+         return res.status(404).json({ success: false, message: '게시물을 찾을 수 없습니다.' })
       }
       res.json({
-         success:true,
+         success: true,
          post,
-         message:'게시물을 성공적으로 불러왔습니다.',
+         message: '게시물을 성공적으로 불러왔습니다.',
       })
    } catch (error) {
       console.error(error)
@@ -135,19 +133,23 @@ router.get('/:id', async (req,res)=>{
    }
 })
 
-//게시물 수정 
+//게시물 수정
 router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
    try {
-      const post = await Post.findOne({ where: {
-         id: req.params.id, UserId : req.user.id
-      }})
-      if(!post) {
-         return res.status(404).json({success:false, message: '게시물을 찾을 수 없습니다.'})
+      console.log('asdf')
+      const post = await Post.findOne({
+         where: {
+            id: req.params.id,
+            UserId: req.user.id,
+         },
+      })
+      if (!post) {
+         return res.status(404).json({ success: false, message: '게시물을 찾을 수 없습니다.' })
       }
       //게시물 수정
       await post.update({
          content: req.body.content,
-         img:req.file ? `/${req.file.filename}` : post.img,
+         img: req.file ? `/${req.file.filename}` : post.img,
       })
       const hashtags = req.body.hashtags.match(/#[^\s#]*/g) // #을 기준으로 해시태그 추출
       if (hashtags) {
@@ -161,11 +163,31 @@ router.put('/:id', isLoggedIn, upload.single('img'), async (req, res) => {
 
          await post.setHashtags(result.map((r) => r[0])) //기존 해시태그를 새 해시태그로 교체
       }
+      //업데이트 된 게시물 다시 조회
+      const updatedPost = await Post.findOne({
+         where: { id: req.params.id },
+         //users와 hashtags 테이블의 컬럼 값을 포함해서 가져옴
+         include: [
+            {
+               model: User,
+               attributes: ['id', 'nick'], //user테이블의 id, nick 컬럼 값만 가져옴
+            },
+            {
+               model: Hashtag,
+               attributes: ['title'], //hashtags 테이블의 title 컬럼 값만 가져옴
+            },
+         ],
+      })
 
-
+      res.json({
+         success: true,
+         post: updatedPost,
+         message: '게시물이 성공적으로 수정되었습니다.',
+      })
    } catch (error) {
+      console.log('sadfsadfasdf')
       console.error(error)
-      res.status(500).json({ success: false, message: '게시물 수정 중 오류가 발생했습니다.', error })
+      // res.status(500).json({ success: false, message: '게시물 수정 중 오류가 발생했습니다.', error })
    }
 })
 
